@@ -1,0 +1,87 @@
+<html>
+
+<head>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/addons/p5.dom.js"></script>
+    <script src="https://d3js.org/d3-scale.v1.min.js"></script>
+
+    <style>
+    video {
+        display: none;
+    }
+    
+    div {
+        float: left;
+        margin: 0;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="white"></div>
+    <div id="hispanic"></div>
+    <div id="asian"></div>
+    <div id="black"></div>
+    <script>
+    var data = {
+        "White": 5925,
+        "Asian": 749,
+        "Hispanic/Latino/Spanish": 704,
+        "Black/African American": 317
+         // "Prefer not to answer": 246
+    }
+
+    var white = new p5(sketch, 'white');
+    white.setData('White', 7205)
+    var hispanic = new p5(sketch, 'hispanic');
+    hispanic.setData('Hispanic', 998)
+    var asian = new p5(sketch, 'asian');
+    asian.setData('Asian', 951)
+    var black = new p5(sketch, 'black');
+    black.setData('Black', 349)
+
+    function sketch(p, container, stat) {
+        var capture;
+        // var w = 300;
+        var w = (window.innerWidth - 50) / 4;
+        var h = 300;
+        var drawn = false;
+
+        var name = ''
+        var value = 0;
+        var blurFactor = 0;
+
+        p.setup = function() {
+            p.createCanvas(w, h);
+            capture = p.createCapture(p.VIDEO);
+        }
+
+        p.draw = function() {
+            // p.background(0)
+            // if (capture && !drawn) {
+            // p.image(capture, 0, 0, w, w * capture.height / capture.width);
+            p.image(capture, 0, 0, w, w * capture.height / capture.width);
+            p.filter(p.BLUR, blurFactor);
+
+            p.fill(255);
+            p.textAlign(p.CENTER);
+            p.textSize(14)
+            p.text(name, w / 2, h / 3)
+
+            // drawn = true;
+            // }
+        }
+
+        p.setData = function(n, v) {
+            name = n;
+            value = v;
+            if (name == "White")
+                blurFactor = 0;
+            else
+                blurFactor = p.map(v, 349, 998, 11, 3);
+        }
+    }
+    </script>
+</body>
+
+</html>
