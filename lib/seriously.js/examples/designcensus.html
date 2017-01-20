@@ -107,7 +107,7 @@
 
         // source.width = canvas.width;
         // source.height = canvas.height; 
-        //////
+    
         var target = seriously.target('#canvas'); 
         target.width = canvas.width;
         target.height = canvas.height; 
@@ -116,13 +116,13 @@
         var blur = seriously.effect('blur');
         blur.source = source;
         blur.amount = 0;
-        //set the reformat object to several of the target properties
-        reformat = seriously.transform('reformat');
+        //setting the reformat object to several of the target properties
+        var reformat = seriously.transform('reformat');
         reformat.width = target.width;
         reformat.height = target.height;
-        reformat.mode = 'Cover';
+        reformat.mode = 'Cover'; //the default is "Contain"
         reformat.source = blur;
-        //then feed that reformat object to poroperties
+        //then set the reformat as the target's source. 
         target.source = reformat
 
         update();
