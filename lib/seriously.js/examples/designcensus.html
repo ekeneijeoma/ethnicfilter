@@ -143,7 +143,6 @@
 
         function update() {
         	index = (++index) % keys.length;
-
             var value = us[keys[index]];
            
             blur.amount = (index == 0) ? 0 : map(value, max, min, 100, 1);
