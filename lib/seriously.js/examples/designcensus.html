@@ -98,20 +98,31 @@
         //     return;
         // }
 
+
+
         var seriously = new Seriously();
 
         var source = seriously.source('camera');
-        // source = seriously.transform('#canvas'); 
+        // source = seriously.transform('#canvas');
+
         // source.width = canvas.width;
         // source.height = canvas.height; 
+        //////
+        target = seriously.target('#canvas'); 
+        target.width = canvas.width;
+        target.height = canvas.height; 
 
-        var target = seriously.target('#canvas');
 
         var blur = seriously.effect('blur');
         blur.source = source;
         blur.amount = 0;
-
-        target.source = blur;
+        //set the reformat object to several of the target properties
+        reformat = seriously.transform('reformat');
+        reformat.width = target.width;
+        reformat.height = target.height;
+        reformat.source = blur;
+        //then feed that reformat object to poroperties
+        target.source = reformat
 
         update();
 
