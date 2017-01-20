@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Seriously.js Camera Demo</title>
+    <style>
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+    }
+    
+    .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        font-size: 5em;
+        color: white;
+        opacity: .5;
+        user-select: none;
+    }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <div id="text" class="container">adfsdsf</div>
+    <script src="../seriously.js"></script>
+    <script src="../sources/seriously.camera.js"></script>
+    <script src="../effects/seriously.blur.js"></script>
+    <script>
+    (function() {
+        var all = {
+            "White": 7205,
+            "Hispanic/Latino/Spanish": 998,
+            "Asian": 951,
+            "Black/African American": 349
+                // "Prefer not to answer": 317
+        }
+
+        var us = {
+            "White": 5925,
+            "Asian": 749,
+            "Hispanic/Latino/Spanish": 704,
+            "Black/African American": 317
+                // "Prefer not to answer": 246
+        }
+
+        var int = {
+            "White": 1280,
+            "Hispanic/Latino/Spanish": 294,
+            "Asian": 202,
+            "Black/African American": 32
+                // "Prefer not to answer": 71
+        }
+
+        var keys = [
+            "White",
+            "Hispanic / Latino / Spanish",
+            "Asian",
+            "Black / African American"
+        ]
+
+        var total = 0;
+        var min = us[keys[0]];
+        var max = 0;
+        for (var i in us) {
+            total += us[i];
+            min = Math.min(min, us[i])
+            max = Math.max(max, us[i])
+        }
+
+        // "White": 5925,
+        // "Asian": 749,
+        // "Hispanic/Latino/Spanish": 704,
+        // "Black/African American": 317
+        min = 317;
+        max = 749;
+
+        var index = 0;
+
+        // devicePixelRatio = window.devicePixelRatio || 1;
+        devicePixelRatio = 1;
+
+        // take advantage of retina/HighDPI display
+        canvas = document.getElementById('canvas');
+        canvas.width = window.innerWidth * devicePixelRatio;
+        canvas.height = window.innerHeight * devicePixelRatio;
+
+        text = document.getElementById('text');
+        text.innerHTML = keys[index]
+
+        // if (Seriously.incompatible('camera')) {
+        //     document.body.appendChild(document.createTextNode('Sorry, your browser does not support getUserMedia'));
+        //     document.querySelector('canvas').style.display = 'none';
+        //     return;
+        // }
+
+        var seriously = new Seriously();
+
+        var source = seriously.source('camera');
+        // source = seriously.transform('#canvas'); 
+        // source.width = canvas.width;
+        // source.height = canvas.height; 
+
+        var target = seriously.target('#canvas');
+
+        var blur = seriously.effect('blur');
+        blur.source = source;
+        blur.amount = 0;
+
+        target.source = blur;
+
+        update();
+
+        // seriously.go();
+        seriously.go(function(now) {
+            var minutes;
+
+            minutes = now / 6000;
+
+            // split.angle = (minutes - Math.floor(minutes)) * PI2;
+            // split.split = Math.cos(now / 1000) / 2 + 0.5;
+        });
+
+        document.addEventListener('click', function() { 
+            update()
+        });
+
+        function update() {
+        	index = (++index) % keys.length;
+
+            var value = us[keys[index]];
+           
+            blur.amount = (index == 0) ? 0 : map(value, max, min, 100, 1);
+            text.innerHTML = keys[index];
+            // blur.amount = (++index)*.01;
+            // text.innerHTML = blur.amount;
+        }
+
+        function map(n, start1, stop1, start2, stop2) {
+            return ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
+        };
+    }());
+    </script>
+</body>
+
+</html>
