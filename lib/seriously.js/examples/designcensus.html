@@ -27,15 +27,18 @@
         user-select: none;
     }
 
-
     </style>
 </head>
 
 <body>
-    <div class="fb-share-button share" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse">Share</a></div>
+<!--     <div class="fb-share-button share" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse">Share</a></div> -->
+    <div id="controls">
+    <div><label for="amount">Blur</label><input type="range" id="amount" min="0" max="1" step="0.001" value="0.5"/></div>
+
     <canvas id="canvas" width="640" height="480"></canvas>
     <div id="text" class="container">adfsdsf</div>
     <div class="fb-share-button share" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse">Share</a></div>
+    <button id="button">Oscillate: Start</button>
     <script src="../seriously.js"></script>
     <script src="../sources/seriously.camera.js"></script>
     <script src="../effects/seriously.blur.js"></script>
@@ -133,7 +136,8 @@
 
         var blur = seriously.effect('blur');
         blur.source = source;
-        blur.amount = 0;
+        // blur.amount = 0;
+        blur.amount = '#amount';
         //setting the reformat object to several of the target properties
         var reformat = seriously.transform('reformat');
         reformat.width = target.width;
@@ -165,8 +169,8 @@
             blur.amount = (index == 0) ? 0 : map(value, max, min, 100, 1);
             console.log(blur.amount)
             text.innerHTML = keys[index];
-            blur.amount = (++index)*.01;
-            text.innerHTML = blur.amount;
+            // blur.amount = (++index)*.01;
+            // text.innerHTML = blur.amount;
         }
 
         function map(n, start1, stop1, start2, stop2) {

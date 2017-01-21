@@ -24,21 +24,20 @@
 			height: 619px;
 		}
 
-
+		body .rs-base {
+			position: static;
+		}
 	</style>
 </head>
 <body>
 	<img src="../../examples/images/robot.jpg" id="robot"/>
 	<canvas id="canvas" width="640" height="662"></canvas>
-	    <div id="text" class="container">adfsdsf</div>
 	<div id="controls">
 		<div><label for="amount">Blur</label><input type="range" id="amount" min="0" max="1" step="0.001" value="0.5"/></div>
 		<button id="button">Oscillate: Start</button>
 	</div>
+	<script src="../../lib/rStats.js"></script>
 	<script src="../../lib/require.js"></script>
-	<script src="../../seriously.js"></script>
-    <!-- <script src="../../sources/seriously.camera.js"></script> -->
-
 	<script>
 		require.config({
 			baseUrl: '../../'
@@ -46,65 +45,9 @@
 
 		require([
 			'seriously',
-			'effects/seriously.blur',
-			'sources/seriously.camera'
+			'effects/seriously.blur'
 		], function (Seriously) {
 			// declare our variables
-
-	    var all = {
-            "White": 7205,
-            "Hispanic/Latino/Spanish": 998,
-            "Asian": 951,
-            "Black/African American": 349
-                // "Prefer not to answer": 317
-        }
-
-        var us = {
-            "White": 5925,
-            "Asian": 749,
-            "Hispanic/Latino/Spanish": 704,
-            "Black/African American": 317
-                // "Prefer not to answer": 246
-        }
-
-        var int = {
-            "White": 1280,
-            "Hispanic/Latino/Spanish": 294,
-            "Asian": 202,
-            "Black/African American": 32
-                // "Prefer not to answer": 71
-        }
-
-        var keys = [
-            "White",
-            "Hispanic / Latino / Spanish",
-            "Asian",
-            "Black / African American"
-        ]
-        var animate = false;
-        var total = 0;
-        var min = us[keys[0]];
-        var max = 0;
-        for (var i in us) {
-            total += us[i];
-            min = Math.min(min, us[i])
-            max = Math.max(max, us[i])
-        }
-
-        // "White": 5925,
-        // "Asian": 749,
-        // "Hispanic/Latino/Spanish": 704,
-        // "Black/African American": 317
-        min = 317;
-        max = 749;
-
-        var index = 0;
-
-        // devicePixelRatio = window.devicePixelRatio || 1;
-        devicePixelRatio = 1;
-        text = document.getElementById('text');
-        text.innerHTML = keys[index]
-
 			var seriously, // the main object that holds the entire composition
 				blur, // blur effect node
 				target, // a wrapper object for our target canvas
@@ -118,7 +61,7 @@
 
 				control = document.getElementById('amount'),
 				canvas = document.getElementById('canvas'),
-		
+				rS, // stats object
 
 				devicePixelRatio = window.devicePixelRatio || 1;
 
@@ -126,12 +69,22 @@
 			canvas.width = 640 * devicePixelRatio;
 			canvas.height = 662 * devicePixelRatio;
 
+			// set up stats
+			rS = new rStats({
+				CSSPath: '../',
+				values: {
+					fps: { caption: 'Framerate (FPS)', below: 30 },
+					raf: { caption: 'Time since last rAF (ms)' }
+				},
+				groups: [
+					{ caption: 'Framerate', values: [ 'fps', 'raf' ] }
+				]
+			});
+
 			seriously = new Seriously();
 
-			var source = seriously.source('camera');
-
 			reformat = seriously.transform('reformat');
-			reformat.source = source;
+			reformat.source = '#robot';
 			reformat.width = canvas.width;
 			reformat.height = canvas.height;
 
@@ -145,7 +98,8 @@
 			seriously.go(function (now) {
 				// callback runs before render
 
-		
+				rS('rAF').tick();
+				rS('FPS').frame();
 
 				if (oscillating) {
 					if (lastRender) {
@@ -161,26 +115,8 @@
 				}
 			}, function () {
 				// callback runs after render
-	
+				rS().update();
 			});
-
-		document.addEventListener('click', function() { 
-            update();
-        });
-        function update() {
-        	animate = true;
-        	index = (++index) % keys.length;
-            var value = us[keys[index]];//key of what ever index we are at
-            blur.amount = (index == 0) ? 0 : map(value, max, min, 100, 1);
-            console.log(blur.amount)
-            text.innerHTML = keys[index];
-            // blur.amount = (++index)*.01;
-            // text.innerHTML = blur.amount;
-        }
-
-        function map(n, start1, stop1, start2, stop2) {
-            return ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
-        };
 
 			document.getElementById('button').addEventListener('click', function () {
 				if (oscillating) {
