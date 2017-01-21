@@ -151,9 +151,9 @@
 				if (oscillating) {
 					console.log(amount)
 					// if (lastRender) {
-					// 	if (amount == updateValue) {
-					// 		oscillating = false
-					// 	}
+						if (amount == updateValue) {
+							oscillating = false
+						}
 					// 	x += direction * (now - lastRender) * Math.PI / 1000;
 					// 	amount = (1 - Math.cos(x)) / 2;
 					// 	control.value = amount;
@@ -162,7 +162,8 @@
 				var minutes;
 
 				minutes = now / 60000;
-				blur.amount = (minutes - Math.floor(minutes)) * PI2;
+				// blur.amount = (minutes - Math.floor(minutes)) * PI2;
+				blur.amount = Math.cos(now / 1000) / 2 + 0.5;
 					// lastRender = now;
 				}
 			}, function () {
@@ -179,7 +180,7 @@
             blur.amount = (index == 0) ? 0 : map(value, max, min, 100, 1);
             text.innerHTML = keys[index];
             // updateValue = blur.amount
-            updateValue = 0.6
+            updateValue = 0.5
             // blur.amount = (++index)*.01;
             // text.innerHTML = blur.amount;
         }
