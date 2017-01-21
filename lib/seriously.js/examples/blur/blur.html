@@ -81,7 +81,6 @@
             "Asian",
             "Black / African American"
         ]
-        var animate = false;
         var total = 0;
         var min = us[keys[0]];
         var max = 0;
@@ -97,6 +96,8 @@
         // "Black/African American": 317
         min = 317;
         max = 749;
+        PI2 = Math.PI * 2;
+        updateValue = 0;
 
         var index = 0;
 
@@ -145,19 +146,24 @@
 			seriously.go(function (now) {
 				// callback runs before render
 
-		
+
 
 				if (oscillating) {
-					if (lastRender) {
-						if (amount <= 0.01 || amount >= 0.99) {
-							direction *= -1;
-						}
-						x += direction * (now - lastRender) * Math.PI / 1000;
-						amount = (1 - Math.cos(x)) / 2;
-						control.value = amount;
-						blur.amount = amount;
-					}
-					lastRender = now;
+					console.log(amount)
+					// if (lastRender) {
+					// 	if (amount == updateValue) {
+					// 		oscillating = false
+					// 	}
+					// 	x += direction * (now - lastRender) * Math.PI / 1000;
+					// 	amount = (1 - Math.cos(x)) / 2;
+					// 	control.value = amount;
+					// 	blur.amount = amount;
+					// }
+				var minutes;
+
+				minutes = now / 60000;
+				blur.amount = (minutes - Math.floor(minutes)) * PI2;
+					// lastRender = now;
 				}
 			}, function () {
 				// callback runs after render
@@ -168,12 +174,12 @@
             update();
         });
         function update() {
-        	animate = true;
         	index = (++index) % keys.length;
             var value = us[keys[index]];//key of what ever index we are at
             blur.amount = (index == 0) ? 0 : map(value, max, min, 100, 1);
-            console.log(blur.amount)
             text.innerHTML = keys[index];
+            // updateValue = blur.amount
+            updateValue = 0.6
             // blur.amount = (++index)*.01;
             // text.innerHTML = blur.amount;
         }
@@ -183,6 +189,8 @@
         };
 
 			document.getElementById('button').addEventListener('click', function () {
+				update();
+				console.log(updateValue)
 				if (oscillating) {
 					oscillating = false;
 					lastRender = 0;
