@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Ethnicity Filter for Design Census</title>
+    <title>Ethnic Filter</title>
     <link href="https://fonts.googleapis.com/css?family=Archivo+Black|Kanit:800,900|Khula:800|Paytone+One|Rubik+Mono+One|Work+Sans:900" rel="stylesheet">
     <style>
     html,
@@ -10,12 +10,7 @@
         width: 100%;
         height: 100%;
         margin: 0px;
-        /*font-family: 'Rubik Mono One', sans-serif;*/
-        /*font-family: 'Kanit', sans-serif;*/
-        /*font-family: 'Work Sans', sans-serif;*/
         font-family: 'Archivo Black', sans-serif;
-        /*font-family: 'Paytone One', sans-serif;*/
-        /*font-family: 'Khula', sans-serif;*/
         font-size: 1em;
         color: white;
         cursor: pointer;
@@ -28,8 +23,6 @@
 
 =======
     video {
-        /*filter: blur(0px);*/
-        /*animation: blurs 2s;*/
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -58,7 +51,7 @@
 >>>>>>> master
     a {
         color: white;
-    } 
+    }
     
     #text {
         opacity: .75;
@@ -112,6 +105,7 @@
                 <3 in NYC</p>
 =======
     <video class="" autoplay></video>
+<<<<<<< HEAD
     <<!-- canvas --> id="canvas" width="640" height="480"></canvas>
         <div id="text" class="center">WHITE</div>
         <div class="topright"><a href="#">SAVE</a> | <a id="about-btn" href="#">ABOUT</a></div>
@@ -227,6 +221,98 @@
             } 
         }());
         </script>
+=======
+    <div id="text" class="center">WHITE</div>
+    <div class="topright"><a href="#">SAVE</a> | <a id="about-btn" href="#">ABOUT</a></div>
+    <div id="about" class="overlay">
+        <div class="center">
+            <p>A data visualization/webcam filter of ethnicity based on the <a href="http://www.designcensus.com">Design Census</a>. Pro tip: squint your eyes to level the playing field a tid bit. Photoshop plugin coming soon... Commissioned by AIGA. Made with
+                <3 in NYC</p>
+        </div>
+        <div class="topright">
+            <a id="close-btn" href="#">CLOSE</a>
+        </div>
+    </div>
+    <script>
+    (function() {
+        var data = [{
+            key: "White",
+            value: 7205
+        }, {
+            key: "Hispanic",
+            value: 998
+        }, {
+            key: "Asian",
+            value: 951
+        }, {
+            key: "Black",
+            value: 349
+        }]
+
+        var valueRange = [349, 998];
+        var blurRange = [35, 5] //[.35, .05]
+
+        var blurStart = 0;
+        var blurStop = 0;
+        var blurStep = .1;
+        var blurT = 0;
+        var blurTimeout;
+
+        var index = 0;
+
+        var text = document.getElementById('text');
+
+        function hasGetUserMedia() {
+            return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia || navigator.msGetUserMedia);
+        }
+
+        if (hasGetUserMedia()) {
+            // Good to go!
+        } else {
+            alert('getUserMedia() is not supported in your browser');
+        }
+
+        var errorCallback = function(e) {
+            console.log('Reeeejected!', e);
+        };
+
+        navigator.getUserMedia = navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia;
+
+        var video = document.querySelector('video');
+
+        if (navigator.getUserMedia) {
+            navigator.getUserMedia({
+                video: true
+            }, function(stream) {
+                video.src = window.URL.createObjectURL(stream);
+            }, errorCallback);
+        } else {
+            // video.src = 'somevideo.webm'; // fallback.
+        }
+
+        video.addEventListener('click', update);
+
+        document.getElementById("about-btn").addEventListener("click", function(event) {
+            document.getElementById("about").style.display = "block"
+        });
+
+        document.getElementById("close-btn").addEventListener("click", function(event) {
+            document.getElementById("about").style.display = "none"
+        });
+
+        function update() {
+            index = (++index) % data.length;
+
+            video.className = data[index].key.toLowerCase()
+            text.innerHTML = data[index].key.toUpperCase();
+        }
+    }());
+    </script>
+>>>>>>> master
 </body>
 
 </html>
