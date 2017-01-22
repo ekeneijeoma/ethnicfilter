@@ -134,7 +134,7 @@
         blur.source = source;
         blur.amount = 0;
 
-        var reformat = seriously.transform('reformat');
+        reformat = seriously.transform('reformat');
         reformat.width = target.width;
         reformat.height = target.height;
         reformat.mode = 'Cover';
@@ -161,6 +161,8 @@
             document.getElementById("about").style.display = "none"
         });
 
+        window.onresize = resize;
+
         function update() {
             index = (++index) % data.length;
 
@@ -178,6 +180,13 @@
         function lerp(start, stop, amt) {
             return amt * (stop - start) + start;
         };
+
+        function resize() {
+          target.width = window.innerWidth * devicePixelRatio;
+          target.height = window.innerHeight * devicePixelRatio; 
+          reformat.width = target.width;
+          reformat.height = target.height;
+        }        
     }());
     </script>
 </body>
