@@ -156,9 +156,9 @@
     </style>
 </head>
 
-<body>
-    <!-- <canvas id="canvas" width="640" height="480"></canvas> -->
+<body> 
     <video class="" autoplay></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
     <div id="text" class="center">WHITE</div>
     <a id="about-btn" class="top-right round-button">?</a></div>
     <div id="about" class="overlay">
@@ -284,14 +284,14 @@
 
         video.addEventListener('click', update);
 
-        // var canvas = document.getElementById('canvas');
-        // canvas.width = window.innerWidth;
-        // canvas.height = window.innerHeight;
+        var canvas = document.getElementById('canvas');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        // document.getElementById("save-btn").addEventListener("click", function() {
-        // var context=canvas.getContext("2d");
-        // context.drawImage(video, 0, 0) 
-        // });
+        document.getElementById("save-btn").addEventListener("click", function() {
+            var context = canvas.getContext("2d");
+            context.drawImage(video, 0, 0)
+        });
 
         document.getElementById("about-btn").addEventListener("click", function() {
             document.getElementById("about").style.display = "block"
