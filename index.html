@@ -56,8 +56,13 @@
         user-select: none;
         pointer-events: none;
     }
-    
-    #about {
+
+    #about p {
+        color: white;
+        font-size: 1.5em;
+    }
+
+    .overlay {
         position: absolute;
         top: 0;
         left: 0;
@@ -67,16 +72,7 @@
         background: url(data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAABl0RVh0U29mdHdhcmUAUGFpbnQuTkVUIHYzLjUuNUmK/OAAAAATSURBVBhXY2RgYNgHxGAAYuwDAA78AjwwRoQYAAAAAElFTkSuQmCC) repeat scroll transparent\9;
         /* ie fallback png background image */
         z-index: 9999;
-        color: white;
         display: none;
-    }
-    
-    #about-btn {
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -o-user-select: none;
-        user-select: none;
     }
     
     .center {
@@ -102,6 +98,11 @@
         text-align: center;
         background: #fff;
         font-size: 1.25em;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
     }
     
     .round-button:hover {
@@ -114,16 +115,12 @@
     <!-- <canvas id="canvas" width="640" height="480"></canvas> -->
     <video class="" autoplay></video>
     <div id="text" class="center">WHITE</div>
-    <div class="top-right">
-        <!--<a id="save-btn" href="#">SAVE</a> | --><a id="about-btn" class="round-button">?</a></div>
+    <a id="about-btn" class="top-right round-button">?</a></div>
     <div id="about" class="overlay">
         <div class="center">
-            <p>A data visualization/webcam filter of ethnicity based on the <a href="http://www.designcensus.com">Design Census</a>. Pro tip: squint your eyes to level the playing field a tid bit. Photoshop plugin coming soon... Commissioned by AIGA. Made with
-                <3 in NYC</p>
+            <p>A data visualization/webcam filter of ethnicity based on the <a href="http://www.designcensus.com">Design Census</a>. There were <a href="https://github.com/AIGAGitHub/DesignCensus2016">7205 Whites, 998 Hispanics, 951 Asians and 349 Blacks</a>. White was set to 0 while the others were mapped to a range from 10-35 using linear scaling. Pro tip: squint your eyes to level the playing field a tid bit. Commissioned by AIGA for Design Census Gallery. Made with <3 in NYC. Adobe CS plugins coming soon... </p>
         </div>
-        <div class="top-right">
-            <a id="close-btn" class="round-button">X</a>
-        </div>
+        <a id="close-btn" class="top-right round-button">X</a>
     </div>
     <script>
     (function() {
@@ -191,7 +188,7 @@
         // context.drawImage(video, 0, 0) 
         // });
 
-        document.getElementById("about-btn").addEventListener("click", function() { 
+        document.getElementById("about-btn").addEventListener("click", function() {
             document.getElementById("about").style.display = "block"
         });
 
