@@ -18,15 +18,8 @@
         /*font-family: 'Khula', sans-serif;*/
         font-size: 1em;
         color: white;
-        cursor: pointer;
     }
     
-<<<<<<< HEAD
-    canvas {
-
-    }
-
-=======
     video {
         /*filter: blur(0px);*/
         /*animation: blurs 2s;*/
@@ -55,7 +48,6 @@
         transition: 1s;
     }
     
->>>>>>> master
     a {
         color: white;
     } 
@@ -102,15 +94,6 @@
 </head>
 
 <body>
-<<<<<<< HEAD
-    <canvas id="canvas" width="640" height="480"></canvas>
-    <div id="text" class="center">WHITE</div>
-    <div class="topright"><a href="#">SAVE</a> | <a id="about-btn" href="#">ABOUT</a></div>
-    <div id="about" class="overlay">
-        <div class="center">
-            <p>A data-driven blur filter based on ethnicity data from <a href="http://www.designcensus.com">Design Census</a>. Pro tip: squint your eyes to level the playing field a tid bit. Photoshop plugin coming soon... Commissioned by AIGA. Made with
-                <3 in NYC</p>
-=======
     <video class="" autoplay></video>
     <<!-- canvas --> id="canvas" width="640" height="480"></canvas>
         <div id="text" class="center">WHITE</div>
@@ -123,7 +106,6 @@
             <div class="topright">
                 <a id="close-btn" href="#">CLOSE</a>
             </div>
->>>>>>> master
         </div>
         <script>
         (function() {
@@ -158,29 +140,6 @@
                 return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
                     navigator.mozGetUserMedia || navigator.msGetUserMedia);
             }
-<<<<<<< HEAD
-        });
-
-        window.addEventListener('resize', function() {
-            canvas.width = window.innerWidth * devicePixelRatio;
-            canvas.height = window.innerHeight * devicePixelRatio;
-
-            target.width = canvas.width;
-            target.height = canvas.height;
-
-            reformat.width = target.width;
-            reformat.height = target.height;
-            reformat.mode = 'Cover';
-            reformat.source = blur;
-
-            target.source = reformat
-        });
-
-        document.getElementById("canvas").addEventListener('click', function() {
-            update()
-        });
-=======
->>>>>>> master
 
             if (hasGetUserMedia()) {
                 // Good to go!
