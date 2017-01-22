@@ -3,7 +3,16 @@
 <head>
     <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/addons/p5.dom.js"></script>
+    <script src="https://d3js.org/d3-array.v1.min.js"></script>
+    <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-format.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-time.v1.min.js"></script>
+    <script src="https://d3js.org/d3-time-format.v2.min.js"></script>
     <script src="https://d3js.org/d3-scale.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+
 
     <style>
     video {
@@ -28,57 +37,100 @@
         "Asian": 749,
         "Hispanic/Latino/Spanish": 704,
         "Black/African American": 317
-         // "Prefer not to answer": 246
+            // "Prefer not to answer": 246
     }
 
     var white = new p5(sketch, 'white');
     white.setData('White', 7205)
+    
     var hispanic = new p5(sketch, 'hispanic');
     hispanic.setData('Hispanic', 998)
+    
     var asian = new p5(sketch, 'asian');
     asian.setData('Asian', 951)
+
     var black = new p5(sketch, 'black');
     black.setData('Black', 349);
 
+    var ethnicities = []
+    ethnicities.push(white)
+    ethnicities.push(hispanic)
+    ethnicities.push(asian)
+    ethnicities.push(black)
+
+    var range1 = 15.0;
+    var range2 = 1.0;
+    // var blurScale = d3.scaleLinear()
+    var blurScale = d3.scalePow()
+        // .domain([349, 998])
+        .domain([349,7205])
+        .range([range1, range2]);
+
+    var factor = 1
+
+    var gui = new dat.gui.GUI();
+    // Choose from accepted values 
+    // gui.add(obj, 'domain2', [ 'one', 'two', 'three' ] );
+    // gui.add(obj, 'speed', { Stopped: 0, Slow: 0.1, Fast: 5 } );
+    gui.add(this, 'range1').min(-10).max(10).step(1.0); 
+    gui.add(this, 'range2').min(-10).max(10).step(1.0); 
+    gui.add(this, 'factor').step(1); 
+    gui.add(this, 'update');
+
+    function update() {
+        blurScale.exponent(factor)
+        blurScale.range([range1, range2]);
+
+        for(var i in ethnicities) {
+            var blurFactor;
+
+            // if (ethnicities[i].name == "White")
+            //     blurFactor = 0;
+            // else
+            blurFactor = blurScale(ethnicities[i].value)
+            // blurFactor = map(v, 349, 998, 15, 5);
+
+            ethnicities[i].setBlur(blurFactor)
+        }
+    }
+
     function sketch(p, container, stat) {
-        var capture;
-        // var w = 300;
+        var capture; 
         var w = (window.innerWidth - 50) / 4;
         var h = 300;
-        var drawn = false;
 
-        var name = ''
-        var value = 0;
-        var blurFactor = 0;
+        p.name = ''
+        p.value = 0;
+        p.blur = 0;
+
+        p.preload = function() {
+            capture = p.loadImage('test.png')
+        }
 
         p.setup = function() {
-            p.createCanvas(w, h);
-            capture = p.createCapture(p.VIDEO);
+            p.createCanvas(w, h);  
+            p.noLoop()
         }
 
         p.draw = function() {
-            // p.background(0)
-            // if (capture && !drawn) {
-            // p.image(capture, 0, 0, w, w * capture.height / capture.width);
+            p.background(0) 
             p.image(capture, 0, 0, w, w * capture.height / capture.width);
-            p.filter(p.BLUR, blurFactor);
+            p.filter(p.BLUR, p.blur);
 
             p.fill(255);
             p.textAlign(p.CENTER);
             p.textSize(14)
-            p.text(name, w / 2, h / 3)
-
-            // drawn = true;
-            // }
+            p.text(p.name, w / 2, h / 3) 
         }
 
         p.setData = function(n, v) {
-            name = n;
-            value = v;
-            if (name == "White")
-                blurFactor = 0;
-            else
-                blurFactor = p.map(v, 349, 998, 11, 3);
+            p.name = n;
+            p.value = v; 
+        }
+
+        p.setBlur = function(b) {
+            p.blur = b;
+            p.redraw();
         }
     }
     </script>
