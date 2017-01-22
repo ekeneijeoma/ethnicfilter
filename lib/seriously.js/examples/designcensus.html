@@ -37,8 +37,6 @@
 
     <canvas id="canvas" width="640" height="480"></canvas>
     <div id="text" class="container">adfsdsf</div>
-    <div class="fb-share-button share" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count" data-size="small" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse">Share</a></div>
-    <button id="button">Oscillate: Start</button>
     <script src="../seriously.js"></script>
     <script src="../sources/seriously.camera.js"></script>
     <script src="../effects/seriously.blur.js"></script>
@@ -100,7 +98,7 @@
         max = 749;
 
         var index = 0;
-         PI2 = Math.PI * 2;
+        
 
         // devicePixelRatio = window.devicePixelRatio || 1;
         devicePixelRatio = 1;
@@ -118,24 +116,16 @@
         //     document.querySelector('canvas').style.display = 'none';
         //     return;
         // }
-
-
-
-
-       var seriously = new Seriously();
-
-
-
-        var source = seriously.source('camera');
+        seriously = new Seriously();
+        var source = seriously.source('camera'); //////////
         // source = seriously.transform('#canvas');
 
         // source.width = canvas.width;
         // source.height = canvas.height; 
     
-        var target = seriously.target('#canvas'); 
-        target.width = canvas.width;
-        target.height = canvas.height; 
-
+        target = seriously.target('#canvas'); 
+ 
+    
 
         var blur = seriously.effect('blur');
         blur.source = source;
@@ -149,6 +139,25 @@
         reformat.source = blur;
         //then set the reformat as the target's source. 
         target.source = reformat
+        
+
+        window.addEventListener( 'resize', onWindowResize, false );
+            function onWindowResize() {
+            // seriously 
+            reformat = null
+            source = null
+            target.destroy()
+            seriously = new Seriously();
+            canvas.width = window.innerWidth * devicePixelRatio;
+            canvas.height = window.innerHeight * devicePixelRatio;
+            var source = seriously.source('camera');
+            target = seriously.target('#canvas'); 
+            reformat = seriously.transform('reformat');
+            reformat.source = source;
+            reformat.width = canvas.width;
+            reformat.height = canvas.height;
+            target.source = reformat
+        }
 
         update();
 
@@ -157,7 +166,7 @@
             var minutes;
 
             minutes = now / 6000;
-
+            console.log("running")
             // split.angle = (minutes - Math.floor(minutes)) * PI2;
             // split.split = Math.cos(now / 1000) / 2 + 0.5;
         });
