@@ -96,37 +96,17 @@
         // "Black/African American": 317
         min = 317;
         max = 749;
-
         var index = 0;
-        
-
-        // devicePixelRatio = window.devicePixelRatio || 1;
+        lastAmount = null;
         devicePixelRatio = 1;
-
-        // take advantage of retina/HighDPI display
         canvas = document.getElementById('canvas');
         canvas.width = window.innerWidth * devicePixelRatio;
         canvas.height = window.innerHeight * devicePixelRatio;
-
         text = document.getElementById('text');
         text.innerHTML = keys[index]
-
-        // if (Seriously.incompatible('camera')) {
-        //     document.body.appendChild(document.createTextNode('Sorry, your browser does not support getUserMedia'));
-        //     document.querySelector('canvas').style.display = 'none';
-        //     return;
-        // }
         seriously = new Seriously();
-        var source = seriously.source('camera'); //////////
-        // source = seriously.transform('#canvas');
-
-        // source.width = canvas.width;
-        // source.height = canvas.height; 
-    
+        var source = seriously.source('camera');    
         target = seriously.target('#canvas'); 
- 
-    
-
         blur = seriously.effect('blur');
         blur.source = source;
         blur.amount = '#amount';
@@ -152,7 +132,7 @@
             var source = seriously.source('camera');
             blur = seriously.effect('blur');
             blur.source = source;
-            blur.amount = '#amount';
+            blur.amount = lastAmount
             target = seriously.target('#canvas'); 
             reformat = seriously.transform('reformat');
             reformat.source = blur;
@@ -177,11 +157,8 @@
         // seriously.go();
         seriously.go(function(now) {
             var minutes;
-
             minutes = now / 6000;
             console.log("running")
-            // split.angle = (minutes - Math.floor(minutes)) * PI2;
-            // split.split = Math.cos(now / 1000) / 2 + 0.5;
         });
 
         document.addEventListener('click', function() { 
@@ -191,9 +168,10 @@
         function update() {
         	index = (++index) % keys.length;
             var value = us[keys[index]];//key of what ever index we are at
-            blur.amount = (index == 0) ? 0 : map(value, max, min, 100, 1);
+            lastAmount = blur.amount = (index == 0) ? 0 : map(value, max, min, 100, 1);
             console.log(blur.amount)
             text.innerHTML = keys[index];
+
             // blur.amount = (++index)*.01;
             // text.innerHTML = blur.amount;
         }
