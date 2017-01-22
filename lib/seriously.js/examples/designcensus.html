@@ -127,36 +127,49 @@
  
     
 
-        var blur = seriously.effect('blur');
+        blur = seriously.effect('blur');
         blur.source = source;
-        // blur.amount = 0;
         blur.amount = '#amount';
-        //setting the reformat object to several of the target properties
-        var reformat = seriously.transform('reformat');
+        reformat = seriously.transform('reformat');
         reformat.width = target.width;
         reformat.height = target.height;
-        reformat.mode = 'Cover'; //the default is "Contain"
+        reformat.mode = 'Cover'; 
         reformat.source = blur;
-        //then set the reformat as the target's source. 
         target.source = reformat
         
 
         window.addEventListener( 'resize', onWindowResize, false );
             function onWindowResize() {
-            // seriously 
+            // seriously
             reformat = null
             source = null
             target.destroy()
+            target = null
+            blur = null
             seriously = new Seriously();
             canvas.width = window.innerWidth * devicePixelRatio;
             canvas.height = window.innerHeight * devicePixelRatio;
             var source = seriously.source('camera');
+            blur = seriously.effect('blur');
+            blur.source = source;
+            blur.amount = '#amount';
             target = seriously.target('#canvas'); 
             reformat = seriously.transform('reformat');
-            reformat.source = source;
+            reformat.source = blur;
             reformat.width = canvas.width;
+            reformat.mode = 'Cover';
             reformat.height = canvas.height;
             target.source = reformat
+
+
+            seriously.go(function(now) {
+            var minutes;
+
+            minutes = now / 6000;
+            console.log("running")
+            // split.angle = (minutes - Math.floor(minutes)) * PI2;
+            // split.split = Math.cos(now / 1000) / 2 + 0.5;
+        });
         }
 
         update();
