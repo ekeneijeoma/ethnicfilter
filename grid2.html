@@ -1,0 +1,73 @@
+<html>
+
+<head>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/addons/p5.dom.js"></script>
+    <script src="https://d3js.org/d3-array.v1.min.js"></script>
+    <script src="https://d3js.org/d3-collection.v1.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-format.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-time.v1.min.js"></script>
+    <script src="https://d3js.org/d3-time-format.v2.min.js"></script>
+    <script src="https://d3js.org/d3-scale.v1.min.js"></script>
+    <style>
+    video {
+        display: none;
+    }
+    
+    div {
+        float: left;
+        margin: 0;
+    }
+    </style>
+</head>
+
+<body> 
+    <script>
+    var us = {
+        "White": 5925,
+        "Asian": 749,
+        "Hispanic/Latino/Spanish": 704,
+        "Black/African American": 317
+            // "Prefer not to answer": 246
+    }
+
+    var selfie; 
+    var w = 300;
+    var h = 250;
+ 
+    var blurFactor = 0;
+    var blurScale = d3.scaleLinear()
+        .domain([317, 5925])
+        .range([100, 0]);
+
+    function setup() {
+        createCanvas(windowWidth, windowHeight); 
+        selfie = loadImage('test.png')
+
+    }
+
+    function draw() { 
+        background(0)
+
+        var i = 0;
+
+        for (var ethnicity in us) {
+            blurFactor = (name == "White") ? 0 : map(us[ethnicity], 349, 998, 15, 5);
+
+            image(selfie, i*w, 0, w, h);
+            filter(BLUR, blurFactor);
+
+            fill(255);
+            textAlign(CENTER);
+            textSize(14)
+            text(ethnicity,i*w + w / 2, h / 3)
+
+            i++;
+        }
+    }
+    </script>
+</body>
+
+</html>

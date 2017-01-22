@@ -1,140 +1,138 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/addons/p5.dom.js"></script>
-    <script src="https://d3js.org/d3-array.v1.min.js"></script>
-    <script src="https://d3js.org/d3-collection.v1.min.js"></script>
-    <script src="https://d3js.org/d3-color.v1.min.js"></script>
-    <script src="https://d3js.org/d3-format.v1.min.js"></script>
-    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
-    <script src="https://d3js.org/d3-time.v1.min.js"></script>
-    <script src="https://d3js.org/d3-time-format.v2.min.js"></script>
-    <script src="https://d3js.org/d3-scale.v1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
-
-
+    <title>Ethnicity Filter for Design Census</title>
+    <link href="https://fonts.googleapis.com/css?family=Archivo+Black|Kanit:800,900|Khula:800|Paytone+One|Rubik+Mono+One|Work+Sans:900" rel="stylesheet">
     <style>
-    video {
-        display: none;
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+        /*font-family: 'Rubik Mono One', sans-serif;*/
+/*font-family: 'Kanit', sans-serif;*/
+/*font-family: 'Work Sans', sans-serif;*/
+font-family: 'Archivo Black', sans-serif;
+/*font-family: 'Paytone One', sans-serif;*/
+/*font-family: 'Khula', sans-serif;*/
     }
     
-    div {
-        float: left;
-        margin: 0;
+    #text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        font-size: 5em;
+        color: white;
+        opacity: .75;
+        user-select: none;
+    }
+
+    #nav {
+        position: absolute;
+        top: 1%;
+        right: 1%;
     }
     </style>
 </head>
 
 <body>
-    <div id="white"></div>
-    <div id="hispanic"></div>
-    <div id="asian"></div>
-    <div id="black"></div>
+    <canvas id="canvas" width="640" height="480"></canvas> 
+    <div id="text">WHITE</div>  
+    <div id="nav"><a href="#">SAVE</a> | <a href="#">ABOUT</a></div>
+    <script src="js/seriously.js"></script>
+    <script src="js/sources/seriously.camera.js"></script>
+    <script src="js/effects/seriously.blur.js"></script>
     <script>
-    var data = {
-        "White": 5925,
-        "Asian": 749,
-        "Hispanic/Latino/Spanish": 704,
-        "Black/African American": 317
-            // "Prefer not to answer": 246
-    }
+    (function() {
+        var data = [{
+            key: "White",
+            value: 7205
+        }, {
+            key: "Hispanic",
+            value: 998
+        }, {
+            key: "Asian",
+            value: 951
+        }, {
+            key: "Black",
+            value: 349
+        }]
 
-    var white = new p5(sketch, 'white');
-    white.setData('White', 7205)
-    
-    var hispanic = new p5(sketch, 'hispanic');
-    hispanic.setData('Hispanic', 998)
-    
-    var asian = new p5(sketch, 'asian');
-    asian.setData('Asian', 951)
+        var valueRange = [349, 998];
+        var blurRange = [.35, .05]
 
-    var black = new p5(sketch, 'black');
-    black.setData('Black', 349);
+        var blurStart = 0;
+        var blurStop = 0;
+        var blurStep = .1;
+        var blurT = 0;
 
-    var ethnicities = []
-    ethnicities.push(white)
-    ethnicities.push(hispanic)
-    ethnicities.push(asian)
-    ethnicities.push(black)
+        var index = 0;
 
-    var range1 = 15.0;
-    var range2 = 1.0;
-    // var blurScale = d3.scaleLinear()
-    var blurScale = d3.scalePow()
-        // .domain([349, 998])
-        .domain([349,7205])
-        .range([range1, range2]);
+        var devicePixelRatio = window.devicePixelRatio || 1;
 
-    var factor = 1
+        var canvas = document.getElementById('canvas');
+        canvas.width = window.innerWidth * devicePixelRatio;
+        canvas.height = window.innerHeight * devicePixelRatio;
 
-    var gui = new dat.gui.GUI();
-    // Choose from accepted values 
-    // gui.add(obj, 'domain2', [ 'one', 'two', 'three' ] );
-    // gui.add(obj, 'speed', { Stopped: 0, Slow: 0.1, Fast: 5 } );
-    gui.add(this, 'range1').min(-10).max(10).step(1.0); 
-    gui.add(this, 'range2').min(-10).max(10).step(1.0); 
-    gui.add(this, 'factor').step(1); 
-    gui.add(this, 'update');
+        var text = document.getElementById('text'); 
 
-    function update() {
-        blurScale.exponent(factor)
-        blurScale.range([range1, range2]);
-
-        for(var i in ethnicities) {
-            var blurFactor;
-
-            // if (ethnicities[i].name == "White")
-            //     blurFactor = 0;
-            // else
-            blurFactor = blurScale(ethnicities[i].value)
-            // blurFactor = map(v, 349, 998, 15, 5);
-
-            ethnicities[i].setBlur(blurFactor)
-        }
-    }
-
-    function sketch(p, container, stat) {
-        var capture; 
-        var w = (window.innerWidth - 50) / 4;
-        var h = 300;
-
-        p.name = ''
-        p.value = 0;
-        p.blur = 0;
-
-        p.preload = function() {
-            capture = p.loadImage('test.png')
+        if (Seriously.incompatible('camera')) {
+            document.body.appendChild(document.createTextNode('Sorry, your browser does not support getUserMedia'));
+            document.querySelector('canvas').style.display = 'none';
+            return;
         }
 
-        p.setup = function() {
-            p.createCanvas(w, h);  
-            p.noLoop()
+        var seriously = new Seriously();
+
+        var source = seriously.source('camera');
+
+        var target = seriously.target('#canvas');
+        target.width = canvas.width;
+        target.height = canvas.height;
+
+        var blur = seriously.effect('blur');
+        blur.source = source;
+        blur.amount = 0;
+
+        var reformat = seriously.transform('reformat');
+        reformat.width = target.width;
+        reformat.height = target.height;
+        reformat.mode = 'Cover';
+        reformat.source = blur;
+
+        target.source = reformat
+
+        seriously.go(function(now) {
+            if (blurT < 1) {
+                blurT += blurStep;
+                blur.amount = lerp(blurStart, blurStop, blurT)
+            }
+        });
+
+        document.addEventListener('click', function() {
+            update()  
+        });
+
+        function update() {
+            index = (++index) % data.length;
+
+            blurT = 0;
+            blurStart = blurStop;
+            blurStop = (index == 0) ? 0 : map(data[index].value, valueRange[0], valueRange[1], blurRange[0], blurRange[1]);
+
+            text.innerHTML = data[index].key.toUpperCase();
         }
 
-        p.draw = function() {
-            p.background(0) 
-            p.image(capture, 0, 0, w, w * capture.height / capture.width);
-            p.filter(p.BLUR, p.blur);
+        function map(n, start1, stop1, start2, stop2) {
+            return ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
+        };
 
-            p.fill(255);
-            p.textAlign(p.CENTER);
-            p.textSize(14)
-            p.text(p.name, w / 2, h / 3) 
-        }
-
-        p.setData = function(n, v) {
-            p.name = n;
-            p.value = v; 
-        }
-
-        p.setBlur = function(b) {
-            p.blur = b;
-            p.redraw();
-        }
-    }
+        function lerp(start, stop, amt) {
+            return amt * (stop - start) + start;
+        };
+    }());
     </script>
 </body>
-
 </html>
-
