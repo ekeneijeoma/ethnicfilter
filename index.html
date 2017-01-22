@@ -134,7 +134,7 @@
         blur.source = source;
         blur.amount = 0;
 
-        var reformat = seriously.transform('reformat');
+        reformat = seriously.transform('reformat');
         reformat.width = target.width;
         reformat.height = target.height;
         reformat.mode = 'Cover';
@@ -170,6 +170,16 @@
 
             text.innerHTML = data[index].key.toUpperCase();
         }
+
+        function resize() {
+          var aspect = window.innerWidth / window.innerHeight;
+          target.width = window.innerWidth;
+          target.height = window.innerHeight;
+          reformat.width = target.width;
+          reformat.height = target.height;
+        }
+
+        window.onresize = resize;
 
         function map(n, start1, stop1, start2, stop2) {
             return ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
