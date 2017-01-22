@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Seriously.js Camera Demo</title>
+    <title>Ethnicity Filter for Design Census</title>
     <link href="https://fonts.googleapis.com/css?family=Archivo+Black|Kanit:800,900|Khula:800|Paytone+One|Rubik+Mono+One|Work+Sans:900" rel="stylesheet">
     <style>
     html,
@@ -18,7 +18,7 @@ font-family: 'Archivo Black', sans-serif;
 /*font-family: 'Khula', sans-serif;*/
     }
     
-    .container {
+    #text {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -28,14 +28,19 @@ font-family: 'Archivo Black', sans-serif;
         opacity: .75;
         user-select: none;
     }
+
+    #nav {
+        position: absolute;
+        top: 1%;
+        right: 1%;
+    }
     </style>
 </head>
 
 <body>
-    <canvas id="canvas" width="640" height="480"></canvas>
-    <div class="container">
-        <div id="text">WHITE</div>
-    </div>
+    <canvas id="canvas" width="640" height="480"></canvas> 
+    <div id="text">WHITE</div>  
+    <div id="nav"><a href="#">SAVE</a> | <a href="#">ABOUT</a></div>
     <script src="../seriously.js"></script>
     <script src="../sources/seriously.camera.js"></script>
     <script src="../effects/seriously.blur.js"></script>
@@ -130,5 +135,4 @@ font-family: 'Archivo Black', sans-serif;
     }());
     </script>
 </body>
-
 </html>
