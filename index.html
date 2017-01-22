@@ -137,8 +137,8 @@
     .resp-sharing-button--small svg {
         margin: 0;
         vertical-align: middle;
-        width:1.5em;
-        height:1.5em;
+        width: 1.5em;
+        height: 1.5em;
     }
     /* Non solid icons get a stroke */
     
@@ -220,6 +220,11 @@
             </div>
         </div>
         <a id="close-btn" class="top-right round-button">X</a>
+        <div id="fallback" class="overlay">
+            <div class="center">
+                View on desktop.
+            </div>
+        </div>
     </div>
     <script>
     (function() {
@@ -274,6 +279,7 @@
             }, errorCallback);
         } else {
             // fallback
+            document.getElementById("fallback").style.display = "block"
         }
 
         video.addEventListener('click', update);
