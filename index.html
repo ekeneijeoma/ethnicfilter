@@ -32,7 +32,6 @@
         -moz-user-select: none;
         -o-user-select: none;
         user-select: none;
-        
         pointer-events: none;
     }
     
@@ -147,6 +146,21 @@
                 blurT += blurStep;
                 blur.amount = lerp(blurStart, blurStop, blurT)
             }
+        });
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth * devicePixelRatio;
+            canvas.height = window.innerHeight * devicePixelRatio;
+
+            target.width = canvas.width;
+            target.height = canvas.height;
+
+            reformat.width = target.width;
+            reformat.height = target.height;
+            reformat.mode = 'Cover';
+            reformat.source = blur;
+
+            target.source = reformat
         });
 
         document.getElementById("canvas").addEventListener('click', function() {
