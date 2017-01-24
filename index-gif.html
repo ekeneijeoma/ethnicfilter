@@ -270,6 +270,8 @@
         var index = 0;
 
         var text = document.getElementById('text');
+        var textFactor = .15
+        text.style.fontSize = (window.innerWidth * textFactor) + "px";
 
         function hasGetUserMedia() {
             return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -291,26 +293,26 @@
             navigator.mozGetUserMedia ||
             navigator.msGetUserMedia;
 
-        var gifW = 300;
-        var gifH = 300;
-
         var video = document.querySelector('video');
 
         var canvas = document.getElementById('canvas');
-        canvas.width = gifW;
-        canvas.height = gifH;
+        canvas.width = 300;
+        canvas.height = 300;
 
         var context = canvas.getContext('2d');
-        context.font = "3em Archivo Black";
+
+        var canvasFontSize = canvas.height * textFactor;
+
+        context.font = canvasFontSize + "px Archivo Black";
         context.textAlign = "center";
 
-        context.fillStyle = "rgb(255,255,255)";
-        context.fillRect(0, 0, gifW, gifH); //GIF can't do transparent so do white
+        context.fillStyle = "rgb(0,0,0)";
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
         var encoder = new GIFEncoder();
         encoder.setRepeat(0); //auto-loop
         encoder.setDelay(1000);
-        encoder.setSize(gifW, gifH);
+        encoder.setSize(canvas.width, canvas.height);
 
         var image = document.getElementById('image')
 
@@ -343,14 +345,12 @@
         });
 
         function update() {
-            index = (++index) % data.length;
-
-            if (index == 1) {
+            if (index == 0) {
                 encoder.start();
-                drawSelife(0)
+                draw(0)
             }
 
-            drawSelife(index);
+            draw((++index) % data.length);
 
             if (index == data.length - 1) {
                 console.log("done");
@@ -360,20 +360,47 @@
             }
         }
 
-        function drawSelife(i) {
+        function draw(i) {
             ethnicity = data[i].key
 
-            video.className = ethnicity
+            // video.className = ethnicity
             text.innerHTML = ethnicity.toUpperCase();
- 
-            var resizedVideoW = Math.round(gifH * video.clientWidth / video.clientHeight) *.5;
-            var blurRadius = blurRadii[ethnicity];
- 
-            context.drawImage(video, (gifW - resizedVideoW) / 2, 0, resizedVideoW, gifH);
-            stackBlurCanvasRGBA("canvas", 0, 0, gifW, gifH, blurRadius);
+
+            // var options = {
+            //     primary: 'height',
+            //     center: true
+            // }
+            // 
+            var canvasSize = {
+                    x: canvas.width,
+                    y: canvas.height
+                }, 
+                canvasStyle = {};
+
+            var videoSize = {
+                    x: video.clientWidth,
+                    y: video.clientHeight
+                }, 
+            videoOffsetX = (window.outerWidth - window.innerWidth),
+            videoOffsetY = (window.outerHeight - window.innerHeight);
+            
+            canvasStyle.height = canvasSize.y; 
+            canvasStyle.width = Math.round(canvasStyle.height * videoSize.x / videoSize.y);
+            
+            if (canvasStyle.width > canvasSize.x) canvasStyle.left = 0 - Math.round((canvasStyle.width - canvasSize.x) / 2);
+            else if (canvasStyle.width < canvasSize.x) canvasStyle.left = Math.round((canvasSize.x - canvasStyle.width) / 2);
+            else canvasStyle.left = 0;
+            
+            // canvasStyle.left = (videoOffsetX) * (canvasSize.x / videoSize.x);
+            canvasStyle.top = videoOffsetY * (canvasSize.y / videoSize.y); 
+
+            context.drawImage(video, canvasStyle.left, 0, canvasStyle.width, canvasStyle.height);
+
+            // stackBlurCanvasRGBA("canvas", 0, 0, canvas.width, canvas.height, blurRadii[ethnicity]);
 
             context.fillStyle = "rgba(255,255,255,.5)";
-            context.fillText(ethnicity.toUpperCase(), gifW / 2, gifH / 2);
+            context.fillText(ethnicity.toUpperCase(), canvasSize.x / 2, canvasSize.y / 2 + canvasStyle.top/2 );
+            // context.fillText(ethnicity.toUpperCase(), canvas.width / 2, canvas.height / 2);
 
             encoder.addFrame(context);
         }
