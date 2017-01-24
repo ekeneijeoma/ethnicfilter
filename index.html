@@ -128,19 +128,21 @@
         height: 1.25em;
         line-height: 1.25em;
         border-radius: 50%;
-        color: #000;
+        color: #fff;
         text-align: center;
-        background: #fff;
+        background: #000;
         font-size: 1.25em;
         -webkit-user-select: none;
         -khtml-user-select: none;
         -moz-user-select: none;
         -o-user-select: none;
         user-select: none;
+        transition: all .5s;
     }
     
     .round-button:hover {
-        color: rgba(0, 0, 0, 0.5);
+        background: #fff;
+        color: #000;
     }
     
     .blink {
@@ -216,11 +218,11 @@
     <div id="text" class="center">WHITE</div>
     <div class="top-right">
         <a id="about-btn" class="round-button">?</a>
-        <a id="download-btn" class="round-button">S</a>
+        <a id="download-btn" class="round-button">&#8593;</a>
     </div>
     <div id="about" class="overlay">
         <div class="center">
-            <p>The Ethnic Filter is a data visualization which shows the lack of diversity in design through webcam blur filters. Click anywhere to move through the ethnicities and filters. The data is from AIGA and Google's 2016 <a href="http://www.designcensus.com">Design Census</a>. In all there were <a href="https://ekeneijeoma.github.io/designcensus/data/ethnicities.csv">7205 Whites, 998 Hispanics, 951 Asians and 349 Blacks</a>. The White blur was set to 0 while the others were mapped to a range from 10 to 35 using linear scaling. This was commissioned by AIGA for Design Census Gallery. Made with ♥ in NYC.
+            <p>The Ethnic Filter is a data visualization which shows the lack of diversity in design through webcam blur filters. Click anywhere to move through the ethnicities and filters. The data is from AIGA and Google's 2016 <a href="http://www.designcensus.com">Design Census</a>. In all, there were <a href="https://ekeneijeoma.github.io/designcensus/data/ethnicities.csv">7205 Whites, 998 Hispanics, 951 Asians and 349 Blacks</a>. The White blur was set to 0 while the others were mapped to a range from 10 to 35 using linear scaling, resulting in 10,  and 35. Commissioned by AIGA for Design Census Gallery. Made with &#9829; in NYC.
             </p>
             <div>
                 <!-- Sharingbutton Facebook -->
@@ -313,12 +315,7 @@
         key: "black",
         value: 349
     }]
-
-    var first = true;
-
-    var valueRange = [349, 998];
-    var blurRange = [35, 5] //[.35, .05] 
-
+ 
     var index = 0;
 
     var text = document.getElementById('text');
@@ -362,7 +359,7 @@
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     var encoder = new GIFEncoder();
-    encoder.setRepeat(0); //auto-loop
+    encoder.setRepeat(0);  
     encoder.setDelay(1000);
     encoder.setSize(canvas.width, canvas.height);
 
