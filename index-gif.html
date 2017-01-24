@@ -42,12 +42,14 @@
     a {
         color: white;
     }
-    
-    canvas,
+    /*canvas,
     img {
         position: relative;
         float: left;
-        /*display: none;*/
+    }*/
+    
+    canvas {
+        display: none;
     }
     
     #gif {
@@ -55,6 +57,7 @@
         position: absolute;
         top: 0;
         left: 0;
+        display: none;
     }
     
     #text {
@@ -71,6 +74,10 @@
     #about p {
         color: white;
         font-size: 1.5em;
+    }
+    
+    #download-btn {
+        display: none;
     }
     
     .overlay {
@@ -168,14 +175,14 @@
 </head>
 
 <body>
-    <div id="gif">
+    <!-- <div id="gif">
         <canvas id="canvas" width="150" height="150"></canvas>
         <img id="image">
-    </div>
+    </div> -->
     <video class="" autoplay></video>
     <div id="text" class="center">WHITE</div>
     <div class="top-right">
-        <!-- <a id="save-btn" class="round-button">S</a> -->
+        <a id="download-btn" class="round-button">S</a>
         <a id="about-btn" class="round-button">?</a>
     </div>
     <div id="about" class="overlay">
@@ -236,11 +243,22 @@
                         </a>
                     </div>
         </div>
-        <a id="close-btn" class="top-right round-button">X</a>
-        <div id="fallback" class="overlay">
-            <div class="center">
-                View on desktop.
-            </div>
+        <a id="close-btn-1" class="top-right round-button">X</a>
+    </div>
+
+    <div id="download" class="overlay">
+        <div class="center">
+            <canvas id="canvas" width="150" height="150"></canvas>
+            <img id="image">
+            <p>
+                Right click to download
+            </p>
+        </div>
+        <a id="close-btn-2" class="top-right round-button">X</a>
+    </div>
+    <div id="fallback" class="overlay">
+        <div class="center">
+            View on desktop.
         </div>
     </div>
     <script src="js/b64.js"></script>
@@ -316,6 +334,8 @@
 
         var image = document.getElementById('image')
 
+        var downloadBtn = document.getElementById("download-btn"); 
+
         var blurRadii = {
             'white': 0,
             'hispanic': 10,
@@ -340,8 +360,15 @@
             document.getElementById("about").style.display = "block"
         });
 
-        document.getElementById("close-btn").addEventListener("click", function() {
+        downloadBtn.addEventListener("click", function() {
+            document.getElementById("download").style.display = "block"
+        });
+
+        document.getElementById("close-btn-1").addEventListener("click", function() {
             document.getElementById("about").style.display = "none"
+        });
+        document.getElementById("close-btn-2").addEventListener("click", function() {
+            document.getElementById("download").style.display = "none"
         });
 
         function update() {
@@ -357,6 +384,8 @@
                 encoder.finish();
                 image.src = 'data:image/gif;base64,' + encode64(encoder.stream().getData())
                 image.style.display = "block"
+
+                downloadBtn.style.display = "block"
             }
         }
 
@@ -374,32 +403,31 @@
             var canvasSize = {
                     x: canvas.width,
                     y: canvas.height
-                }, 
+                },
                 canvasStyle = {};
 
             var videoSize = {
                     x: video.clientWidth,
                     y: video.clientHeight
-                }, 
-            videoOffsetX = (window.outerWidth - window.innerWidth),
-            videoOffsetY = (window.outerHeight - window.innerHeight);
-            
-            canvasStyle.height = canvasSize.y; 
+                },
+                videoOffsetX = (window.outerWidth - window.innerWidth),
+                videoOffsetY = (window.outerHeight - window.innerHeight);
+
+            canvasStyle.height = canvasSize.y;
             canvasStyle.width = Math.round(canvasStyle.height * videoSize.x / videoSize.y);
-            
+            canvasStyle.top = videoOffsetY * (canvasSize.y / videoSize.y);
+
             if (canvasStyle.width > canvasSize.x) canvasStyle.left = 0 - Math.round((canvasStyle.width - canvasSize.x) / 2);
             else if (canvasStyle.width < canvasSize.x) canvasStyle.left = Math.round((canvasSize.x - canvasStyle.width) / 2);
             else canvasStyle.left = 0;
-            
-            // canvasStyle.left = (videoOffsetX) * (canvasSize.x / videoSize.x);
-            canvasStyle.top = videoOffsetY * (canvasSize.y / videoSize.y); 
 
             context.drawImage(video, canvasStyle.left, 0, canvasStyle.width, canvasStyle.height);
 
-            // stackBlurCanvasRGBA("canvas", 0, 0, canvas.width, canvas.height, blurRadii[ethnicity]);
+            stackBlurCanvasRGBA("canvas", 0, 0, canvas.width, canvas.height, blurRadii[ethnicity]);
 
             context.fillStyle = "rgba(255,255,255,.5)";
-            context.fillText(ethnicity.toUpperCase(), canvasSize.x / 2, canvasSize.y / 2 + canvasStyle.top/2 );
+
+            context.fillText(ethnicity.toUpperCase(), canvasSize.x / 2, canvasSize.y / 2 + canvasStyle.top / 2);
             // context.fillText(ethnicity.toUpperCase(), canvas.width / 2, canvas.height / 2);
 
             encoder.addFrame(context);
