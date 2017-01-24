@@ -47,6 +47,7 @@
     img {
         position: relative;
         float: left;
+        /*display: none;*/
     }
     
     #gif {
@@ -54,7 +55,6 @@
         position: absolute;
         top: 0;
         left: 0;
-        display: none;
     }
     
     #text {
@@ -366,19 +366,19 @@
             video.className = ethnicity
             text.innerHTML = ethnicity.toUpperCase();
  
-            // var resizedVideoW = (window.innerWidth / window.innerHeight) * gifW;
-            // var blurRadius = blurRadii[ethnicity];
+            var resizedVideoW = (window.innerWidth / window.innerHeight) * gifW;
+            var blurRadius = blurRadii[ethnicity];
 
-            // // context.drawImage(video, (gifW - canvasWidth) / 2, 0, canvasWidth, canvas.height);
-            // context.drawImage(video, (gifW - resizedVideoW) / 2, 0, resizedVideoW, gifH);
-            // // stackBlurCanvasRGBA("canvas", 0, 0, gifW, gifH, blurRadius);
+            // context.drawImage(video, (gifW - canvasWidth) / 2, 0, canvasWidth, canvas.height);
+            context.drawImage(video, (gifW - resizedVideoW) / 2, 0, resizedVideoW, gifH);
+            // stackBlurCanvasRGBA("canvas", 0, 0, gifW, gifH, blurRadius);
 
-            // context.font = "1em Archivo Black";
-            // context.fillStyle = "rgba(255,255,255,.5)";
-            // context.textAlign = "center";
-            // context.fillText(ethnicity.toUpperCase(), gifW / 2, gifH / 2);
+            context.font = "1em Archivo Black";
+            context.fillStyle = "rgba(255,255,255,.5)";
+            context.textAlign = "center";
+            context.fillText(ethnicity.toUpperCase(), gifW / 2, gifH / 2);
 
-            // encoder.addFrame(context);
+            encoder.addFrame(context);
         }
 
     }());
