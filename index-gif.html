@@ -291,9 +291,6 @@
             navigator.mozGetUserMedia ||
             navigator.msGetUserMedia;
 
-
-
-
         var gifW = 300;
         var gifH = 300;
 
@@ -308,7 +305,7 @@
         context.textAlign = "center";
 
         context.fillStyle = "rgb(255,255,255)";
-        context.fillRect(0, 0, canvas.width, canvas.height); //GIF can't do transparent so do white
+        context.fillRect(0, 0, gifW, gifH); //GIF can't do transparent so do white
 
         var encoder = new GIFEncoder();
         encoder.setRepeat(0); //auto-loop
@@ -369,12 +366,11 @@
             video.className = ethnicity
             text.innerHTML = ethnicity.toUpperCase();
  
-            var resizedVideoW = (window.innerWidth / window.innerHeight) * gifW;
+            var resizedVideoW = Math.round(gifH * video.clientWidth / video.clientHeight) *.5;
             var blurRadius = blurRadii[ethnicity];
-
-            // context.drawImage(video, (gifW - canvasWidth) / 2, 0, canvasWidth, canvas.height);
+ 
             context.drawImage(video, (gifW - resizedVideoW) / 2, 0, resizedVideoW, gifH);
-            // stackBlurCanvasRGBA("canvas", 0, 0, gifW, gifH, blurRadius);
+            stackBlurCanvasRGBA("canvas", 0, 0, gifW, gifH, blurRadius);
 
             context.fillStyle = "rgba(255,255,255,.5)";
             context.fillText(ethnicity.toUpperCase(), gifW / 2, gifH / 2);
