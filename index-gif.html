@@ -304,6 +304,9 @@
         canvas.height = gifH;
 
         var context = canvas.getContext('2d');
+        context.font = "3em Archivo Black";
+        context.textAlign = "center";
+
         context.fillStyle = "rgb(255,255,255)";
         context.fillRect(0, 0, canvas.width, canvas.height); //GIF can't do transparent so do white
 
@@ -373,9 +376,7 @@
             context.drawImage(video, (gifW - resizedVideoW) / 2, 0, resizedVideoW, gifH);
             // stackBlurCanvasRGBA("canvas", 0, 0, gifW, gifH, blurRadius);
 
-            context.font = "1em Archivo Black";
             context.fillStyle = "rgba(255,255,255,.5)";
-            context.textAlign = "center";
             context.fillText(ethnicity.toUpperCase(), gifW / 2, gifH / 2);
 
             encoder.addFrame(context);
