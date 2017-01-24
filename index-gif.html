@@ -75,12 +75,19 @@
         color: white;
         font-size: 1.5em;
     }
-
+    
     #download p {
         text-align: center;
     }
     
+    #about-btn {
+        float: left;
+        margin-left: 10px;
+    }
+    
     #download-btn {
+        float: left;
+        margin-left: 10px;
         display: none;
     }
     
@@ -129,6 +136,23 @@
     
     .round-button:hover {
         color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .blink {
+        animation: blink-animation 1s steps(5, start) 5;
+        -webkit-animation: blink-animation 1s steps(5, start) 5;
+    }
+    
+    @keyframes blink-animation {
+        to {
+            visibility: hidden;
+        }
+    }
+    
+    @-webkit-keyframes blink-animation {
+        to {
+            visibility: hidden;
+        }
     }
     
     .resp-sharing-button__link,
@@ -186,8 +210,8 @@
     <video class="" autoplay></video>
     <div id="text" class="center">WHITE</div>
     <div class="top-right">
-        <a id="download-btn" class="round-button">S</a>
         <a id="about-btn" class="round-button">?</a>
+        <a id="download-btn" class="round-button">S</a>
     </div>
     <div id="about" class="overlay">
         <div class="center">
@@ -249,13 +273,12 @@
         </div>
         <a id="close-btn-1" class="top-right round-button">X</a>
     </div>
-
     <div id="download" class="overlay">
         <div class="center">
             <canvas id="canvas" width="150" height="150"></canvas>
             <img id="image">
             <p>
-                Right click to download
+                Right click to download or click close and try again.
             </p>
         </div>
         <a id="close-btn-2" class="top-right round-button">X</a>
@@ -338,7 +361,7 @@
 
         var image = document.getElementById('image')
 
-        var downloadBtn = document.getElementById("download-btn"); 
+        var downloadBtn = document.getElementById("download-btn");
 
         var blurRadii = {
             'white': 0,
@@ -376,12 +399,22 @@
         });
 
         function update() {
-            if (index == 0) {
+            if (index < data.length - 1)
+                index++;
+            else
+                index = 0;
+
+            if (index == 1) {
+                console.log(index % data.length);
                 encoder.start();
                 draw(0)
+
+                downloadBtn.style.display = "none"
+                downloadBtn.className = "round-button"
             }
 
-            draw((++index) % data.length);
+            if (index > 0)
+                draw(index);
 
             if (index == data.length - 1) {
                 console.log("done");
@@ -390,6 +423,7 @@
                 image.style.display = "block"
 
                 downloadBtn.style.display = "block"
+                downloadBtn.className = "round-button blink"
             }
         }
 
@@ -432,7 +466,7 @@
             context.fillStyle = "rgba(255,255,255,.5)";
 
             context.fillText(ethnicity.toUpperCase(), canvasSize.x / 2, canvasSize.y / 2 + canvasStyle.top / 2);
-            // context.fillText(ethnicity.toUpperCase(), canvas.width / 2, canvas.height / 2);
+            // context.fillText(ethnicity.toUpperCase(), canvas.width / 2, canvas.height / 2); 
 
             encoder.addFrame(context);
         }
