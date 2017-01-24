@@ -80,6 +80,11 @@
         text-align: center;
     }
     
+    #download img {
+        display: block;
+        margin: 0 auto;
+    }
+    
     #about-btn {
         float: left;
         margin-left: 10px;
@@ -278,7 +283,7 @@
             <canvas id="canvas" width="150" height="150"></canvas>
             <img id="image">
             <p>
-                Right click to download or click close and try again.
+                Right click to download or close and try again.
             </p>
         </div>
         <a id="close-btn-2" class="top-right round-button">X</a>
@@ -294,184 +299,178 @@
     <script src="js/GIFEncoder.js"></script>
     <script src="js/StackBlur.js"></script>
     <script>
-    (function() {
-        var data = [{
-            key: "white",
-            value: 7205
-        }, {
-            key: "hispanic",
-            value: 998
-        }, {
-            key: "asian",
-            value: 951
-        }, {
-            key: "black",
-            value: 349
-        }]
+    // (function() {
+    var data = [{
+        key: "white",
+        value: 7205
+    }, {
+        key: "hispanic",
+        value: 998
+    }, {
+        key: "asian",
+        value: 951
+    }, {
+        key: "black",
+        value: 349
+    }]
 
-        var valueRange = [349, 998];
-        var blurRange = [35, 5] //[.35, .05] 
+    var first = true;
 
-        var index = 0;
+    var valueRange = [349, 998];
+    var blurRange = [35, 5] //[.35, .05] 
 
-        var text = document.getElementById('text');
-        var textFactor = .15
-        text.style.fontSize = (window.innerWidth * textFactor) + "px";
+    var index = 0;
 
-        function hasGetUserMedia() {
-            return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
-                navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    var text = document.getElementById('text');
+    var textFactor = .15
+    text.style.fontSize = (window.innerWidth * textFactor) + "px";
+
+    function hasGetUserMedia() {
+        return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia || navigator.msGetUserMedia);
+    }
+
+    if (hasGetUserMedia()) {
+        // Good to go!
+    } else {
+        alert('getUserMedia() is not supported in your browser');
+    }
+
+    var errorCallback = function(e) {
+        console.log('Reeeejected!', e);
+    };
+
+    navigator.getUserMedia = navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia ||
+        navigator.msGetUserMedia;
+
+    var video = document.querySelector('video');
+
+    var canvas = document.getElementById('canvas');
+    canvas.width = 300;
+    canvas.height = 300;
+
+    var context = canvas.getContext('2d');
+
+    var canvasFontSize = canvas.height * textFactor;
+
+    context.font = canvasFontSize + "px Archivo Black";
+    context.textAlign = "center";
+
+    context.fillStyle = "rgb(0,0,0)";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    var encoder = new GIFEncoder();
+    encoder.setRepeat(0); //auto-loop
+    encoder.setDelay(1000);
+    encoder.setSize(canvas.width, canvas.height);
+
+    var image = document.getElementById('image')
+
+    var downloadBtn = document.getElementById("download-btn");
+
+    var blurRadii = {
+        'white': 0,
+        'hispanic': 10,
+        'asian': 12,
+        'black': 35
+    }
+
+    if (navigator.getUserMedia) {
+        navigator.getUserMedia({
+            video: true
+        }, function(stream) {
+            video.src = window.URL.createObjectURL(stream);
+        }, errorCallback);
+    } else {
+        // fallback
+        document.getElementById("fallback").style.display = "block"
+    }
+
+    video.addEventListener('click', update);
+
+    document.getElementById("about-btn").addEventListener("click", function() {
+        document.getElementById("about").style.display = "block"
+    });
+
+    downloadBtn.addEventListener("click", function() {
+        document.getElementById("download").style.display = "block"
+    });
+
+    document.getElementById("close-btn-1").addEventListener("click", function() {
+        document.getElementById("about").style.display = "none"
+    });
+    document.getElementById("close-btn-2").addEventListener("click", function() {
+        document.getElementById("download").style.display = "none"
+    });
+
+    var start = 1;
+
+    function update() {
+        if ((++index - start) % data.length == 0) {
+            console.log("asdf");
+            encoder.start();
+
+            draw(0)
+                // 
+            downloadBtn.style.display = "none"
+            downloadBtn.className = "round-button"
         }
+ 
+        draw(index % data.length);
 
-        if (hasGetUserMedia()) {
-            // Good to go!
-        } else {
-            alert('getUserMedia() is not supported in your browser');
-        }
+        if (index % data.length == 3) {
+            encoder.finish();
 
-        var errorCallback = function(e) {
-            console.log('Reeeejected!', e);
-        };
+            downloadBtn.style.display = "block"
+            downloadBtn.className = "round-button blink"
 
-        navigator.getUserMedia = navigator.getUserMedia ||
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia ||
-            navigator.msGetUserMedia;
+            image.src = 'data:image/gif;base64,' + encode64(encoder.stream().getData())
+            image.style.display = "block"
 
-        var video = document.querySelector('video');
+            start = 0;
+        } 
+    }
 
-        var canvas = document.getElementById('canvas');
-        canvas.width = 300;
-        canvas.height = 300;
+    function draw(i) {
+        ethnicity = data[i].key
 
-        var context = canvas.getContext('2d');
+        video.className = ethnicity
+        text.innerHTML = ethnicity.toUpperCase();
 
-        var canvasFontSize = canvas.height * textFactor;
+        var canvasSize = {
+                x: canvas.width,
+                y: canvas.height
+            },
+            canvasStyle = {};
 
-        context.font = canvasFontSize + "px Archivo Black";
-        context.textAlign = "center";
+        var videoSize = {
+                x: video.clientWidth,
+                y: video.clientHeight
+            },
+            videoOffsetX = (window.outerWidth - window.innerWidth),
+            videoOffsetY = (window.outerHeight - window.innerHeight);
 
-        context.fillStyle = "rgb(0,0,0)";
-        context.fillRect(0, 0, canvas.width, canvas.height);
+        canvasStyle.height = canvasSize.y;
+        canvasStyle.width = Math.round(canvasStyle.height * videoSize.x / videoSize.y);
+        canvasStyle.top = videoOffsetY * (canvasSize.y / videoSize.y);
 
-        var encoder = new GIFEncoder();
-        encoder.setRepeat(0); //auto-loop
-        encoder.setDelay(1000);
-        encoder.setSize(canvas.width, canvas.height);
+        if (canvasStyle.width > canvasSize.x) canvasStyle.left = 0 - Math.round((canvasStyle.width - canvasSize.x) / 2);
+        else if (canvasStyle.width < canvasSize.x) canvasStyle.left = Math.round((canvasSize.x - canvasStyle.width) / 2);
+        else canvasStyle.left = 0;
 
-        var image = document.getElementById('image')
+        context.drawImage(video, canvasStyle.left, 0, canvasStyle.width, canvasStyle.height);
 
-        var downloadBtn = document.getElementById("download-btn");
+        stackBlurCanvasRGBA("canvas", 0, 0, canvas.width, canvas.height, blurRadii[ethnicity]);
 
-        var blurRadii = {
-            'white': 0,
-            'hispanic': 10,
-            'asian': 12,
-            'black': 35
-        }
+        context.fillStyle = "rgba(255,255,255,.5)";
+        context.fillText(ethnicity.toUpperCase(), canvasSize.x / 2, canvasSize.y / 2 + canvasStyle.top / 2);
+        // context.fillText(ethnicity.toUpperCase(), canvas.width / 2, canvas.height / 2); 
 
-        if (navigator.getUserMedia) {
-            navigator.getUserMedia({
-                video: true
-            }, function(stream) {
-                video.src = window.URL.createObjectURL(stream);
-            }, errorCallback);
-        } else {
-            // fallback
-            document.getElementById("fallback").style.display = "block"
-        }
-
-        video.addEventListener('click', update);
-
-        document.getElementById("about-btn").addEventListener("click", function() {
-            document.getElementById("about").style.display = "block"
-        });
-
-        downloadBtn.addEventListener("click", function() {
-            document.getElementById("download").style.display = "block"
-        });
-
-        document.getElementById("close-btn-1").addEventListener("click", function() {
-            document.getElementById("about").style.display = "none"
-        });
-        document.getElementById("close-btn-2").addEventListener("click", function() {
-            document.getElementById("download").style.display = "none"
-        });
-
-        function update() {
-            if (index < data.length - 1)
-                index++;
-            else
-                index = 0;
-
-            if (index == 1) {
-                console.log(index % data.length);
-                encoder.start();
-                draw(0)
-
-                downloadBtn.style.display = "none"
-                downloadBtn.className = "round-button"
-            }
-
-            if (index > 0)
-                draw(index);
-
-            if (index == data.length - 1) {
-                console.log("done");
-                encoder.finish();
-                image.src = 'data:image/gif;base64,' + encode64(encoder.stream().getData())
-                image.style.display = "block"
-
-                downloadBtn.style.display = "block"
-                downloadBtn.className = "round-button blink"
-            }
-        }
-
-        function draw(i) {
-            ethnicity = data[i].key
-
-            // video.className = ethnicity
-            text.innerHTML = ethnicity.toUpperCase();
-
-            // var options = {
-            //     primary: 'height',
-            //     center: true
-            // }
-            // 
-            var canvasSize = {
-                    x: canvas.width,
-                    y: canvas.height
-                },
-                canvasStyle = {};
-
-            var videoSize = {
-                    x: video.clientWidth,
-                    y: video.clientHeight
-                },
-                videoOffsetX = (window.outerWidth - window.innerWidth),
-                videoOffsetY = (window.outerHeight - window.innerHeight);
-
-            canvasStyle.height = canvasSize.y;
-            canvasStyle.width = Math.round(canvasStyle.height * videoSize.x / videoSize.y);
-            canvasStyle.top = videoOffsetY * (canvasSize.y / videoSize.y);
-
-            if (canvasStyle.width > canvasSize.x) canvasStyle.left = 0 - Math.round((canvasStyle.width - canvasSize.x) / 2);
-            else if (canvasStyle.width < canvasSize.x) canvasStyle.left = Math.round((canvasSize.x - canvasStyle.width) / 2);
-            else canvasStyle.left = 0;
-
-            context.drawImage(video, canvasStyle.left, 0, canvasStyle.width, canvasStyle.height);
-
-            stackBlurCanvasRGBA("canvas", 0, 0, canvas.width, canvas.height, blurRadii[ethnicity]);
-
-            context.fillStyle = "rgba(255,255,255,.5)";
-
-            context.fillText(ethnicity.toUpperCase(), canvasSize.x / 2, canvasSize.y / 2 + canvasStyle.top / 2);
-            // context.fillText(ethnicity.toUpperCase(), canvas.width / 2, canvas.height / 2); 
-
-            encoder.addFrame(context);
-        }
-
-    }());
+        encoder.addFrame(context);
+    }
+    // }());
     </script>
     <script>
     (function(i, s, o, g, r, a, m) {
